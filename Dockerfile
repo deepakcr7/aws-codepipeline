@@ -1,20 +1,13 @@
-FROM node:carbon
+FROM ubuntu:12.04
 
+MAINTAINER Kimbro Staken version: 0.1
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN apt-get update && apt-get install -y apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
 
-RUN npm install
-# If you are building your code for production
-# RUN npm install --only=production
+EXPOSE 80
 
-# Bundle app source
-COPY . .
-
-EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
